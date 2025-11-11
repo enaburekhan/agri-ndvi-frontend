@@ -19,8 +19,8 @@ const SignupSchema = Yup.object({
       .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
     password_confirmation: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Pasword is required"),
+      .oneOf([Yup.ref("password")], "Password must match")
+      .required("Pasword confirmation is required"),
      
 })
 
@@ -34,9 +34,13 @@ const SignupPage: React.FC = () => {
     { setSubmitting }: FormikHelpers<SignupValues>
   ) => {
     try {
-        const data = await signup(values).unwrap();
+        const data = await signup({
+            email: values.email,
+            password: values.password,
+            password_confirmation: values.password_confirmation,
+        }).unwrap();
         dispatch(setCredentials(data));
-        window.location.href = "/dashboard";
+        window.location.href = "/";
     } catch (err) {
         console.error("Signup failed", err);
     } finally {

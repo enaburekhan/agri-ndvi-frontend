@@ -10,20 +10,24 @@ interface LoginRequest {
     password: string; 
 }
 
+interface SignupRequest extends LoginRequest {
+    password_confirmation: string;
+}
+
 export const authApi = api.injectEndpoints({
     endpoints: (builder) => ({
         login: builder.mutation<LoginResponse, LoginRequest>({
-            query: (body) => ({
+            query: (credentials) => ({
                 url: "/users/sign_in",
                 method: "POST",
-                body,
+                body: { user: credentials }
             }),
         }),
-        signup: builder.mutation<LoginResponse, LoginRequest>({
-            query: (body) => ({
+        signup: builder.mutation<LoginResponse, SignupRequest>({
+            query: (credentials) => ({
                 url: "/users",
                 method: "POST",
-                body,
+                body: { user: credentials }
             }),
         }),
     }),

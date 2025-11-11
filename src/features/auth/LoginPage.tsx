@@ -28,9 +28,12 @@ const LoginPage: React.FC = () => {
         { setSubmitting }: FormikHelpers<LoginValues>
     ) => {
         try{
-            const data = await login(values).unwrap();
+            const data = await login({
+                email: values.email,
+                password: values.password
+            }).unwrap();
             dispatch(setCredentials(data));
-            window.location.href = "/dashboard";
+            window.location.href = "/";
         } catch (err) {
             console.error("Login failed", err);
         } finally {
