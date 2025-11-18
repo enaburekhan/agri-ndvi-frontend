@@ -1,8 +1,9 @@
-import { Formik, Form, Field, type FormikHelpers } from "formik";
+import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useAppDispatch } from "../../app/hooks";
 import { useLoginMutation } from "./authApi";
 import { setCredentials } from "./authSlice";
+import { Link } from "react-router-dom";
 
 interface LoginValues {
     email: string;
@@ -42,9 +43,9 @@ const LoginPage: React.FC = () => {
     };
 
     return (
-        <div className="flex h-screen items-center justify-center bg-gray-50">
-            <div className="bg-white p-8 rounded-xl shadow-md w-95">
-                <h1 className="text-2xl font-bold mb-4 text-center">Sign in</h1>
+        <div className="flex min-h-screen items-center justify-center bg-gray-100">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-1/2 max-w-md">
+                <h1 className="text-3xl font-bold mb-4 text-center mb-6">Welcome Back</h1>
                 <Formik
                   initialValues={{ email: "", password: "" }}
                   validationSchema={LoginSchema}
@@ -52,17 +53,25 @@ const LoginPage: React.FC = () => {
                 >
                     {({ isSubmitting }) => (
                         <Form>
-                            <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
+                            <div>
+                                <label className="text-sm font-medium" htmlFor="email">Email</label>
                             <Field
                                id="email"
                                name="email"
                                type="email"
-                               className="border p-2 w-full mb-4 rounded-md"
+                               className="mt-1 border p-2 w-full mb-4 rounded-lg focus:ring-green-500"
                                placeholder="Email"
                                required
                             />
-                            <label
-                              className="block text-sm font-medium mb-1"
+                            <ErrorMessage
+                              name="password"
+                              component="div"
+                              className="text-red-500 text-xs mt-1"
+                            />
+                            </div>
+                            <div className="mb-6">
+                                <label
+                              className="text-sm font-medium"
                               htmlFor="password"
                             >
                                 Password
@@ -71,22 +80,39 @@ const LoginPage: React.FC = () => {
                                id="password"
                                name="password"
                                type="password"
-                               className="border p-2 w-full mb-4 rounded-md"
+                               className="mt-1 border p-2 w-full mb-4 rounded-lg focus:ring-green-500"
                                placeholder="Password"
                                required
                             />
-                            <button
+                            <ErrorMessage
+                              name="password"
+                              component="div"
+                              className="text-red-500 text-xs mt-1 mb-6"
+                            />
+                            </div>
+                            <div className="flex justify-center items-center mt-4">
+                                <button
                               type="submit"
                               disabled={isLoading || isSubmitting}
-                              className="bg-green-600 text-white w-full py-2 rounded-md hover:bg-green-700"
+                              className="w-1/4 bg-green-600 text-white py-4 rounded-lg hover:bg-green-700 transition"
                             >
                                 { isLoading || isSubmitting ? "Signing in..." : "Login" }
                             </button>
+                            </div>
+                            
                             {error && (
                                 <p className="text-red-500 text-sm mt-2 text-center">
                                     Invalid credentials
                                 </p>
                             )}
+                            {/* Toggle link */}
+                            <p className="text-sm text-center mt-4">
+                                Don't have an account? {" "}
+                                <Link to="/users" className="text-green-600 font-semibold hover:underline">
+                                  Sign up
+                                </Link>
+
+                            </p>
 
                         </Form>
                     )} 

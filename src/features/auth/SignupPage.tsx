@@ -1,5 +1,6 @@
-import { Field, Form, Formik, type FormikHelpers } from "formik";
+import { Field, Form, Formik, ErrorMessage, type FormikHelpers } from "formik";
 import * as Yup from "yup";
+import { Link } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
 import { useSignupMutation } from "./authApi";
 import { setCredentials } from "./authSlice";
@@ -49,9 +50,9 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-50">
-        <div className="bg-white p-8 rounded-xl shadow-md w-96">
-            <h1 className="text-2xl font-bold mb-4 text-center">Sign up</h1>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+        <div className="bg-white p-8 rounded-2xl shadow-lg w-1/2 max-w-md">
+            <h1 className="text-3xl font-bold mb-6 text-center">Create Account</h1>
             <Formik
               initialValues={{
                 email: "",
@@ -62,45 +63,77 @@ const SignupPage: React.FC = () => {
               onSubmit={handleSubmit}
             >
               {({ isSubmitting }) => (
-                <Form>
-                    <label className="block text-sm font-medium mb-1" htmlFor="email">Email</label>
+                <Form className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium" htmlFor="email">Email</label>
                     <Field
                        id="email"
                        name="email"
                        type="email"
-                       className="border p-2 w-full mb-4 rounded-md"
+                       className="mt-1 w-full border rounded-lg p-2 focus:ring-2 focus:ring-green-500"
                        placeholder= "Email"
                        required
                     />
-                    <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                    </div>
+                    <div>
+                       <label className="text-sm font-medium" htmlFor="password">Password</label>
                     <Field
                        id="password"
                        name="password"
                        type="password"
-                       className="border p-2 w-full mb-4 rounded-md"
+                       className="mt-1 w-full border rounded-lg p-2 focus:ring-2 focus:ring-green-500"
                        placeholder= "Password"
                        required
                     />
-                    <label className="block text-sm font-medium mb-1" htmlFor="password_confirmation">Confirm Password</label>
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                    </div>
+                    <div>
+                       <label className="block text-sm font-medium mb-1" htmlFor="password_confirmation">Confirm Password</label>
                     <Field
                        id="password_confirmation"
                        name="password_confirmation"
                        type="password"
-                       className="border p-2 w-full mb-4 rounded-md"
+                       className="mt-1 w-full border rounded-lg p-2 focus:ring-2 focus:ring-green-500"
                        placeholder= "Confirm Password"
                        required
                     />
-                    <button
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                    </div>
+                    <div className="flex justify-center items-center mt-4">
+                      <button
                       type="submit"
                       disabled={isLoading || isSubmitting}
-                      className="bg-green-600 text-white w-full py-2 rounded-md hover:bg-green-700"
+                      className="bg-green-600 text-white w-1/4 py-2 rounded-lg hover:bg-green-700 transition"
                     >
-                       {error && (
+                      {isLoading || isSubmitting ? "Creating account..." : "Sign Up"} 
+                    </button>
+                    </div>
+                    
+                    {error && (
                         <p className="text-red-500 text-sm mt-2 text-center">
                            Signup failed. Please try again
                         </p>
                        )}
-                    </button>
+                       {/* Toggle Link */}
+                       <p className="text-sm text-center mt-4">
+                          Already have an Account?{" "}
+                          <Link to="/users/sign-in" className="text-green-600 font-semibold hover:underline">
+                            Sign in
+                          </Link>
+                       </p>
                 </Form>
               )}
             </Formik>
