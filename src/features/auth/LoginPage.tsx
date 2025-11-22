@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { useAppDispatch } from "../../app/hooks";
 import { useLoginMutation } from "./authApi";
 import { setCredentials } from "./authSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface LoginValues {
   email: string;
@@ -23,6 +23,7 @@ const LoginSchema = Yup.object({
 const LoginPage: React.FC = () => {
   const [login, { isLoading, error }] = useLoginMutation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (
     values: LoginValues,
@@ -34,7 +35,7 @@ const LoginPage: React.FC = () => {
         password: values.password,
       }).unwrap();
       dispatch(setCredentials(data));
-      window.location.href = "/";
+      navigate("/projects");
     } catch (err) {
       console.error("Login failed", err);
     } finally {
@@ -68,7 +69,7 @@ const LoginPage: React.FC = () => {
                   required
                 />
                 <ErrorMessage
-                  name="password"
+                  name="email"
                   component="div"
                   className="text-red-500 text-xs mt-1"
                 />
@@ -110,7 +111,7 @@ const LoginPage: React.FC = () => {
               <p className="text-sm text-center mt-4">
                 Don't have an account?{" "}
                 <Link
-                  to="/users"
+                  to="/signup"
                   className="text-green-600 font-semibold hover:underline"
                 >
                   Sign up

@@ -1,4 +1,3 @@
-import React from "react";
 import { Field, Form, Formik, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useCreateProjectMutation, useGetProjectsQuery } from "./projectApi";
@@ -18,6 +17,8 @@ const ProjectSchema = Yup.object().shape({
 
 export default function ProjectsList() {
   const { data: projects, isLoading } = useGetProjectsQuery();
+  console.log("data", projects);
+
   const [createProject] = useCreateProjectMutation();
 
   return (

@@ -140,7 +140,7 @@ const SignupPage: React.FC = () => {
               <p className="text-sm text-center mt-4">
                 Already have an Account?{" "}
                 <Link
-                  to="/users/sign-in"
+                  to="/login"
                   className="text-green-600 font-semibold hover:underline"
                 >
                   Sign in

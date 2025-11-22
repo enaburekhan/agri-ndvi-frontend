@@ -4,13 +4,17 @@ import type { RootState } from "./store";
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://[::1]:3000/api/v1",
+    baseUrl: "http://localhost:3000/api/v1",
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth?.token;
-      if (token) headers.set("Authorization", `Bearer ${token}`);
+      const token = (getState() as RootState).auth.token;
+      console.log("token", token);
+
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
       return headers;
     },
   }),
-  tagTypes: ["User", "Project", "Upload"],
+  tagTypes: ["User", "Project"],
   endpoints: () => ({}),
 });

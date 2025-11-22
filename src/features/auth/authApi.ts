@@ -1,29 +1,25 @@
 import { api } from "../../app/api";
 
-interface LoginResponse {
+export interface LoginResponse {
   token: string;
   user: { id: number; email: string };
 }
 
-interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-interface SignupRequest extends LoginRequest {
-  password_confirmation: string;
-}
-
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<LoginResponse, LoginRequest>({
-      query: (credentials) => ({
-        url: "/users/sign_in",
-        method: "POST",
-        body: { user: credentials },
-      }),
-    }),
-    signup: builder.mutation<LoginResponse, SignupRequest>({
+    login: builder.mutation<LoginResponse, { email: string; password: string }>(
+      {
+        query: (credentials) => ({
+          url: "/users/sign_in",
+          method: "POST",
+          body: { user: credentials },
+        }),
+      },
+    ),
+    signup: builder.mutation<
+      LoginResponse,
+      { email: string; password: string; password_confirmation: string }
+    >({
       query: (credentials) => ({
         url: "/users",
         method: "POST",
@@ -31,7 +27,6 @@ export const authApi = api.injectEndpoints({
       }),
     }),
   }),
-  overrideExisting: false,
 });
 
 export const { useLoginMutation, useSignupMutation } = authApi;
