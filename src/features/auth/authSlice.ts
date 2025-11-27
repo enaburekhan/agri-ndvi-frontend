@@ -5,7 +5,7 @@ interface AuthState {
   user: { id: number; email: string } | null;
 }
 
-// Load persisted token + user from localStorage 
+// Load persisted token + user from localStorage
 const storedToken = localStorage.getItem("token");
 const storedUser = localStorage.getItem("user");
 

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useGetProjectQuery } from "./projectApi";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -31,12 +31,15 @@ export default function ProjectDetail() {
   const lng = Number(project.longitude);
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <Link to="/projects" className="text-blue-600 hover:underline text-sm">
+        &larr; Back to Projects
+      </Link>
       {/* Header */}
-      <div className="bg-white shadow rounded-xl p-4">
-        <h1 className="text-2xl font-bold text-gray-900">{project.name}</h1>
-        <p className="text-gray-600 mt-2">{project.description}</p>
-        <div className="text-sm text-gray-500 mt-4">
+      <div className="bg-white shadow rounded-2xl p-6 border border-gray-100">
+        <h1 className="text-3xl font-bold">{project.name}</h1>
+        <p className="text-gray-700 mt-2">{project.description}</p>
+        <div className="flex text-sm text-gray-600 mt-4">
           <p>
             <span className="font-semibold">Latitude:</span>
             {lat}
@@ -49,7 +52,7 @@ export default function ProjectDetail() {
       </div>
 
       {/* Map Section */}
-      <div className="h-[350px] md:h-[450px] w-full bg-gray-200 rounded-xl overflow-hidden shadow">
+      <div className="h-[400px] md:h-[450px] w-full bg-gray-200 rounded-2xl overflow-hidden shadow-lg">
         <MapContainer
           center={{ lat, lng }}
           zoom={13}
@@ -71,7 +74,7 @@ export default function ProjectDetail() {
       </div>
 
       {/* FUTURE SECTIONS */}
-      <div className="bg-white shadow rounded-xl p-4">
+      <div className="bg-white shadow rounded-2xl p-6 border border-gray-100">
         <h2 className="text-xl font-bold mb-2">Project Data</h2>
         <p className="text-gray-600 text-sm">
           NDVI uploads, processed results and reports will appear here.
