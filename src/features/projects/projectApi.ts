@@ -86,6 +86,34 @@ export const projectApi = api.injectEndpoints({
       },
       invalidatesTags: ["Project"],
     }),
+
+    // Update Project
+    updateProject: builder.mutation<Project, { id: number } & CreateProjectDto>(
+      {
+        query: ({ id, ...data }) => ({
+          url: `/projects/${id}`,
+          method: "PATCH",
+          body: data,
+        }),
+        transformResponse: (response) => normalizeProject(response),
+        invalidatesTags: (_result, _error, { id }) => [
+          "Project",
+          { type: "Project", id },
+        ],
+      },
+    ),
+
+    // Delete Project
+    deleteProject: builder.mutation<{ success: boolean; id: number }, number>({
+      query: (id) => ({
+        url: `/projects/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_result, _error, id) => [
+        "Project",
+        { type: "Project", id },
+      ],
+    }),
   }),
 });
 
@@ -93,4 +121,6 @@ export const {
   useGetProjectsQuery,
   useGetProjectQuery,
   useCreateProjectMutation,
+  useUpdateProjectMutation,
+  useDeleteProjectMutation,
 } = projectApi;

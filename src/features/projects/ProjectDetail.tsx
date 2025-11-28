@@ -1,85 +1,93 @@
-import { Link, useParams } from "react-router-dom";
-import { useGetProjectQuery } from "./projectApi";
+import { useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-
-// Fix default marker icon issue in Leaflet
-const DefaultIcon = L.icon({
-  iconUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-  shadowUrl:
-    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-});
-L.Marker.prototype.options.icon = DefaultIcon;
+import ProjectModal from "./ProjectModal";
+import ConfirmModal from "../../components/ConfirmModal";
+import {
+  useGetProjectQuery,
+  useUpdateProjectMutation,
+  useDeleteProjectMutation,
+} from "./projectApi";
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
-  const projectId = Number(id);
-  const { data: project, isLoading, isError } = useGetProjectQuery(projectId);
+  const navigate = useNavigate();
+  const { data: project, isLoading } = useGetProjectQuery(id);
+  const [updateProject] = useUpdateProjectMutation();
+  const [deleteProject] = useDeleteProjectMutation();
 
-  if (isLoading)
-    return <p className="p-4 text-center text-lg font-semibold">Loading...</p>;
-  if (isError || !project)
-    return (
-      <p className="p-4 text-center text-red-600 font-semibold">
-        Failed to load project.
-      </p>
-    );
+  const [editOpen, setEditOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const lat = Number(project.latitude);
-  const lng = Number(project.longitude);
+  if (isLoading) return <p className="p-4 text-center">Loading...</p>;
+  if (!project)
+    return <p className="p-4 text-center text-red-600">Not found</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
+    <div className="p-6 max-w-4xl mx-auto">
       <Link to="/projects" className="text-blue-600 hover:underline text-sm">
         &larr; Back to Projects
       </Link>
-      {/* Header */}
-      <div className="bg-white shadow rounded-2xl p-6 border border-gray-100">
-        <h1 className="text-3xl font-bold">{project.name}</h1>
-        <p className="text-gray-700 mt-2">{project.description}</p>
-        <div className="flex text-sm text-gray-600 mt-4">
-          <p>
-            <span className="font-semibold">Latitude:</span>
-            {lat}
-          </p>
-          <p>
-            <span className="font-semibold">Longitude:</span>
-            {lng}
-          </p>
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h1 className="text-3xl font-bold">{project.name}</h1>
+          <p className="text-gray-600">{project.description}</p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setEditOpen(true)}
+            className="px-3 py-2 bg-indigo-600 text-white rounded-md"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => setConfirmOpen(true)}
+            className="px-3 py-2 bg-red-600 text-white rounded-md"
+          >
+            Delete
+          </button>
         </div>
       </div>
 
-      {/* Map Section */}
-      <div className="h-[400px] md:h-[450px] w-full bg-gray-200 rounded-2xl overflow-hidden shadow-lg">
+      <div className="rounded-xl overflow-hidden h-[360px] mb-6">
         <MapContainer
-          center={{ lat, lng }}
+          center={[project.latitude, project.longitude]}
           zoom={13}
-          scrollWheelZoom={false}
           className="h-full w-full"
         >
-          <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={{ lat, lng }}>
-            <Popup>
-              <span className="font-semibold">{project.name}</span>
-              <br />
-              {project.description}
-            </Popup>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <Marker position={[project.latitude, project.longitude]}>
+            <Popup>{project.name}</Popup>
           </Marker>
         </MapContainer>
       </div>
 
-      {/* FUTURE SECTIONS */}
-      <div className="bg-white shadow rounded-2xl p-6 border border-gray-100">
-        <h2 className="text-xl font-bold mb-2">Project Data</h2>
-        <p className="text-gray-600 text-sm">
-          NDVI uploads, processed results and reports will appear here.
+      <div className="bg-white p-4 rounded-xl shadow">
+        <p className="text-gray-700">
+          Coordinates: {project.latitude}, {project.longitude}
         </p>
       </div>
+
+      <ProjectModal
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        initial={project}
+        title="Edit Project"
+        onSubmit={async (payload) => {
+          await updateProject({ id: project.id, ...payload } as any);
+        }}
+      />
+
+      <ConfirmModal
+        open={confirmOpen}
+        title="Delete project?"
+        message="This action cannot be undone."
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={async () => {
+          await deleteProject(project.id as any);
+          navigate("/projects");
+        }}
+      />
     </div>
   );
 }
