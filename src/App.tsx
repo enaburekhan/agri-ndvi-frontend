@@ -4,6 +4,8 @@ import SignupPage from "./features/auth/SignupPage";
 import Dashboard from "./pages/Dashboard";
 import ProjectsList from "./features/projects/ProjectsList";
 import ProjectDetail from "./features/projects/ProjectDetail";
+import ReportsList from "./features/reports/ReportsList";
+import ReportDetail from "./features/reports/ReportDetail";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/projects" element={<ProjectsList />} />
         <Route path="/projects/:id" element={<ProjectDetail />} />
+        <Route path="/reports" element={<ReportsList />} />
+        <Route path="/reports/:id" element={<ReportDetail />} />
         <Route path="/" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
