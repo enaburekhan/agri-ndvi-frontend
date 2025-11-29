@@ -2,7 +2,7 @@ export interface Report {
   id: number;
   project_id: number;
   title: string;
-  description?: string;
+  summary?: string;
   file_url?: string; // URL to the uploaded file
   created_at?: string;
   updated_at?: string;
@@ -11,6 +11,6 @@ export interface Report {
 export interface CreateReportDto {
   project_id: number;
   title: string;
-  description?: string;
+  summary?: string;
   file?: File | null; // File to be uploaded
 }
